@@ -6,15 +6,14 @@ import { useTranslation } from "react-i18next";
 import { QrCode } from "../../commons/QrCode";
 import VpSubmissionResult from "./Result/VpSubmissionResult";
 import { useAppDispatch } from "../../../redux/hooks";
-import { getVpRequest, resetVpRequest, setBankingCredentials, setSelectCredential, setSelectedClaims,setSharingType } from "../../../redux/features/verify/vpVerificationState";
+import { getVpRequest, resetVpRequest, setBankingCredentials, setSelectedClaims,setSharingType } from "../../../redux/features/verify/vpVerificationState";
 import { VCShareType, VpSubmissionResultInt } from "../../../types/data-types";
 import { Button } from "./commons/Button";
 import { raiseAlert } from "../../../redux/features/alerts/alerts.slice";
 import { AlertMessages } from "../../../utils/config";
 
 
-const DisplayActiveStep = (props:any) => {
-  console.log(props);
+const DisplayActiveStep = () => {
   const { t } = useTranslation("Verify");
   const isLoading = useVerifyFlowSelector((state) => state.isLoading);
   const qrData = useVerifyFlowSelector((state) => state.qrData);
@@ -30,43 +29,39 @@ const DisplayActiveStep = (props:any) => {
   const dispatch = useAppDispatch();
 
   const handleRequestCredentials = () => {
-    dispatch(setSelectCredential());
+    dispatch(setBankingCredentials());
+    handleGenerateQR();
   };
 
   const handleRegenerateQr = () => {
     dispatch(setSelectedClaims({selectedClaims: unverifiedClaims}));
     dispatch(getVpRequest({ selectedClaims: unverifiedClaims }));
   };
-  
+
   const handleRestartProcess = () => {
     dispatch(resetVpRequest());
   };
 
-// composable
-const handleGenerateQR = () => {
-  if(selectedClaims.length === 1){
-    dispatch(setSharingType({sharingType : VCShareType.SINGLE}))
-  }
-  else if (selectedClaims.length > 1){
-    dispatch(setSharingType({sharingType : VCShareType.MULTIPLE}))
-  }
-  dispatch(getVpRequest({ selectedClaims }));
-};
+  const handleGenerateQR = () => {
+    if(selectedClaims.length === 1){
+      dispatch(setSharingType({sharingType : VCShareType.SINGLE}))
+    }
+    else if (selectedClaims.length > 1){
+      dispatch(setSharingType({sharingType : VCShareType.MULTIPLE}))
+    }
+    dispatch(getVpRequest({ selectedClaims }));
+  };
 
 
   useEffect(() => {
-    if(props.bankingUseCase){
-      dispatch(setBankingCredentials());
-      handleGenerateQR();
-    }
-  },[dispatch]);
-
-
+    dispatch(setBankingCredentials());
+    handleGenerateQR();
+  }, [dispatch])
 
 
   if (isLoading) {
     return <Loader className={`absolute lg:top-[200px] right-[100px]`} />;
-  } 
+  }
   else if(selectedClaims.length === 1 && unverifiedClaims.length === 1 && isSingleVc){
     dispatch(raiseAlert({ ...AlertMessages().incorrectCredential, open: true }))
     dispatch(resetVpRequest());
@@ -85,8 +80,7 @@ const handleGenerateQR = () => {
         />
       </div>
     );
-  }
-  else if (!qrData) {
+  } else if (!qrData) {
     return (
       <div className="flex flex-col mt-10 lg:mt-0 pt-0 pb-[100px] lg:py-[42px] px-0 lg:px-[104px] text-center content-center justify-center">
         <div className="xs:col-end-13">
@@ -97,24 +91,23 @@ const handleGenerateQR = () => {
               <div
                 className={`grid bg-${window._env_.DEFAULT_THEME}-lighter-gradient rounded-[12px] w-[250px] lg:w-[320px] aspect-square content-center justify-center`}
               ></div>
-              <div className="absolute top-[88px] left-[98px] lg:top-[185px] lg:left-[50%] lg:translate-x-[-50%] lg:translate-y-[-50%]">
+              <div className="absolute top-[88px] left-[98px] lg:top-[185px] lg:left-[5y0%] lg:translate-x-[-50%] lg:translate-y-[-50%]">
                 <QrIcon className="w-[78px] lg:w-[100px]" />
               </div>
-              <Button
+              {/* <Button
                 id="request-credentials-button"
-                title={t("rqstButton")}
+                title={"hh"}
                 className={`w-[300px] mx-auto lg:ml-[76px] mt-10 lg:hidden`}
                 fill
                 onClick={handleRequestCredentials}
                 disabled={txnId !== ""}
-              />
+              /> */}
             </div>
           </div>
         </div>
       </div>
     );
-  }
-   else if (qrData) {
+  } else if (qrData) {
     return (
       <QrCode
         title={t("qrCodeInfo")}
@@ -126,6 +119,6 @@ const handleGenerateQR = () => {
   }
 };
 
-export const VpVerification = (props:any) => {
-  return <div>{DisplayActiveStep(props)}</div>;
+export const BankingRedirection = () => {
+  return <div>{DisplayActiveStep()}</div>;
 };

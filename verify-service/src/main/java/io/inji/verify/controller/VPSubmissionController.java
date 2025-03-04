@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = Constants.RESPONSE_SUBMISSION_URI_ROOT)
 @Slf4j
+@CrossOrigin
 public class VPSubmissionController {
 
     @Autowired

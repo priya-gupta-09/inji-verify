@@ -23,6 +23,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 @RestController
 @Validated
 @Slf4j
+@CrossOrigin
 public class VPRequestController {
 
     @Autowired

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/vc-verification")
 @RestController
 @Slf4j
+@CrossOrigin
 public class VCVerificationController {
     @Autowired
     VCVerificationService VCVerificationService;

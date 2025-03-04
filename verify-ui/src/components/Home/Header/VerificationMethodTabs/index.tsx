@@ -45,6 +45,7 @@ const Tab = ({
 };
 
 function VerificationMethodTabs(props: any) {
+  const tabDisabled = props.tabProps;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const method = useVerificationFlowSelector((state) => state.method);
@@ -92,20 +93,22 @@ function VerificationMethodTabs(props: any) {
           ref={carouselRef}
         >
           <div className="flex space-x-0.5 border-gray-200 font-bold items-end mx-auto lg:justify-center">
-            <Tab
-              id="upload-qr-code-tab"
-              active={method === "UPLOAD"}
-              label={t('upload')}
-              onClick={() => {
-                switchToVerificationMethod("UPLOAD");
-                navigate(Pages.Home);
-              }}
-            />
-            <Tab
+          { !tabDisabled.uploadDisabled && <Tab
+            id="upload-qr-code-tab"
+            active={method === "UPLOAD"}
+            label={t('upload')}
+            onClick={tabDisabled.uploadDisabled ? undefined : () => {
+              switchToVerificationMethod("UPLOAD");
+              navigate(Pages.Home);
+            }}
+          />
+          }
+              <Tab
               id="scan-qr-code-tab"
+              disabled = {tabDisabled.scanDisabled}
               active={method === "SCAN"}
               label={t('scan')}
-              onClick={() => {
+              onClick={tabDisabled.scanDisabled ? undefined : () => {
                 switchToVerificationMethod("SCAN");
                 navigate(Pages.Scan);
               }}
@@ -114,7 +117,7 @@ function VerificationMethodTabs(props: any) {
               id="vp-verification-tab"
               active={method === "VERIFY"}
               label={t('VP_Verification')}
-              onClick={() => {
+              onClick={tabDisabled.vpVerifyDisabled? undefined : () => {
                 switchToVerificationMethod("VERIFY");
                 navigate(Pages.VerifyCredentials);
               }}

@@ -83,6 +83,15 @@ const vpVerificationState = createSlice({
       state.sharingType = VCShareType.SINGLE;
       state.isPartiallyShared = false;
     },
+    //composable banking
+    setBankingCredentials: (state) => {
+      state.activeScreen = VerificationSteps[state.method].SelectCredential;
+      state.verificationSubmissionResult = [];
+      state.unVerifiedClaims = [];
+      state.selectedClaims = verifiableClaims.filter(
+        (claim) => claim.essential
+      );
+    },
   },
 });
 
@@ -94,7 +103,8 @@ export const {
   setVpRequestStatus,
   resetVpRequest,
   verificationSubmissionComplete,
-  setSelectedClaims
+  setSelectedClaims,
+  setBankingCredentials
 } = vpVerificationState.actions;
 
 export default vpVerificationState.reducer;

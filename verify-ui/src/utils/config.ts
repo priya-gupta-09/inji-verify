@@ -7,6 +7,7 @@ export const Pages = {
     VerifyCredentials: "/verify",
     Offline: "/offline",
     Redirect: "/redirect",
+    BankingRedirection: "/verify-bank",
     PageNotFound: "*"
 }
 
@@ -163,20 +164,39 @@ export const CONSTRAINTS_IDEAL_HEIGHT = 1440;
 export const CONSTRAINTS_IDEAL_FRAME_RATE = 30;
 export const FRAME_PROCESS_INTERVAL_MS = 100;
 export const THROTTLE_FRAMES_PER_SEC = 500; // Throttle frame processing to every 500ms (~2 frames per second)
-export let verifiableClaims: claim[] = [];
-export const initializeClaims = async () => {
-  try {
-    const response = await fetch(window._env_.VERIFIABLE_CLAIMS_CONFIG_URL);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    verifiableClaims = data.verifiableClaims as claim[];
-  } catch (error) {
-    console.error("Error loading claims from ConfigMap:", error);
-  }
-};
-initializeClaims();
+export let verifiableClaims: claim[] = [
+      {
+        logo: "",
+        name: "mosip",
+        type: "MosipVerifiableCredential",
+        essential: true,
+        definition: {
+          purpose:
+            "Relying party is requesting your digital ID for the purpose of Self-Authentication",
+          format: { ldp_vc: { proof_type: ["RsaSignature2018"] } },
+          input_descriptors: [
+            {
+              id: "id card credential",
+              format: { ldp_vc: { proof_type: ["RsaSignature2018"] } },
+              constraints: {},
+            },
+          ],
+        },
+      },
+    ];
+// export const initializeClaims = async () => {
+//   try {
+//     const response = await fetch(window._env_.VERIFIABLE_CLAIMS_CONFIG_URL);
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+//     const data = await response.json();
+//     verifiableClaims = data.verifiableClaims as claim[];
+//   } catch (error) {
+//     console.error("Error loading claims from ConfigMap:", error);
+//   }
+// };
+// initializeClaims();
 export const OPENID4VP_PROTOCOL = "openid4vp://authorize?";
 export const QrCodeExpiry = 300; //5*60 seconds
 
@@ -245,6 +265,15 @@ export const MosipVerifiableCredentialRenderOrder = [
   "email",
   "addressLine1",
   "city",
+];
+
+export const ComposableCredentialRenderOrder = [
+    "fullName",
+    "gender",
+    "dateOfBirth",
+    "phone",
+    "email",
+    "city"
 ];
 
 export const BASE64_PADDING = "=="

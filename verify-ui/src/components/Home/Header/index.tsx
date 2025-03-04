@@ -26,7 +26,7 @@ function Header(props: any) {
           {t("description")}
         </p>
       </div>
-      <VerificationMethodTabs />
+      <VerificationMethodTabs tabProps={props.headerProps} />
     </div>
   );
 }

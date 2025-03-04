@@ -15,6 +15,7 @@ import { isRTL } from "./utils/i18n";
 import { VerificationMethod } from "./types/data-types";
 import { goToHomeScreen } from "./redux/features/verification/verification.slice";
 import { Verify } from "./pages/Verify";
+import { BankingVerify } from "./pages/BankingVerify";
 
 function switchToVerificationMethod(method: VerificationMethod) {
   store.dispatch(goToHomeScreen({ method }));
@@ -49,6 +50,12 @@ const router = createBrowserRouter([
     path: Pages.PageNotFound,
     element: <PageNotFound404 />,
   },
+  // composable banking
+  {
+    path: Pages.BankingRedirection,
+    element: <BankingVerify />,
+    loader: () => switchToVerificationMethod("VERIFY"),
+  }
 ]);
 
 const preloadImages = ['/assets/images/under_construction.svg', '/assets/images/inji-logo.svg'];

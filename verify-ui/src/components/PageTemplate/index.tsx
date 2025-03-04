@@ -7,12 +7,12 @@ import Header from '../Home/Header';
 const PageTemplate = (props: any) => {
     return (
         <div>
-            <Navbar/>
+            <Navbar fromComposableBanking = {props.fromComposableBanking} />
             <div className="w-full bg-pageBackGroundColor text-center">
-                <Header/>
+                <Header headerProps={props} />
             </div>
             {props.children}
-            <Copyrights/>
+            <Copyrights fromComposableBanking = {props.fromComposableBanking}/>
             <CheckingForInternetConnectivity/>
         </div>
     );
