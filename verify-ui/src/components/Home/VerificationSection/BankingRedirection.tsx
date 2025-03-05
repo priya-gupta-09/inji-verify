@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { QrIcon } from "../../../utils/theme-utils";
 import { useVerifyFlowSelector } from "../../../redux/features/verification/verification.selector";
 import Loader from "../../commons/Loader";
@@ -6,12 +6,18 @@ import { useTranslation } from "react-i18next";
 import { QrCode } from "../../commons/QrCode";
 import VpSubmissionResult from "./Result/VpSubmissionResult";
 import { useAppDispatch } from "../../../redux/hooks";
-import { getVpRequest, resetVpRequest, setBankingCredentials, setSelectedClaims,setSharingType } from "../../../redux/features/verify/vpVerificationState";
+import {
+  getVpRequest,
+  resetVpRequest,
+  setBankingCredentials,
+  setSelectedClaims,
+  setSharingType,
+} from "../../../redux/features/verify/vpVerificationState";
 import { VCShareType, VpSubmissionResultInt } from "../../../types/data-types";
 import { Button } from "./commons/Button";
 import { raiseAlert } from "../../../redux/features/alerts/alerts.slice";
 import { AlertMessages } from "../../../utils/config";
-
+import { getDetailsOrder } from "../../../utils/commonUtils";
 
 const DisplayActiveStep = () => {
   const { t } = useTranslation("Verify");
@@ -19,22 +25,26 @@ const DisplayActiveStep = () => {
   const qrData = useVerifyFlowSelector((state) => state.qrData);
   const status = useVerifyFlowSelector((state) => state.status);
   const txnId = useVerifyFlowSelector((state) => state.txnId);
-  const unverifiedClaims = useVerifyFlowSelector((state) => state.unVerifiedClaims);
+  const unverifiedClaims = useVerifyFlowSelector(
+    (state) => state.unVerifiedClaims
+  );
   const selectedClaims = useVerifyFlowSelector((state) => state.selectedClaims);
   const sharingType = useVerifyFlowSelector((state) => state.sharingType);
-  const verifiedVcs: VpSubmissionResultInt[] = useVerifyFlowSelector((state) => state.verificationSubmissionResult);
+  const verifiedVcs: VpSubmissionResultInt[] = useVerifyFlowSelector(
+    (state) => state.verificationSubmissionResult
+  );
   const qrSize = window.innerWidth <= 1024 ? 240 : 320;
   const isSingleVc = sharingType === VCShareType.SINGLE;
 
   const dispatch = useAppDispatch();
 
-  const handleRequestCredentials = () => {
-    dispatch(setBankingCredentials());
-    handleGenerateQR();
-  };
+  // const handleRequestCredentials = () => {
+  //   dispatch(setBankingCredentials());
+  //   handleGenerateQR();
+  // };
 
   const handleRegenerateQr = () => {
-    dispatch(setSelectedClaims({selectedClaims: unverifiedClaims}));
+    dispatch(setSelectedClaims({ selectedClaims: unverifiedClaims }));
     dispatch(getVpRequest({ selectedClaims: unverifiedClaims }));
   };
 
@@ -43,37 +53,40 @@ const DisplayActiveStep = () => {
   };
 
   const handleGenerateQR = () => {
-    if(selectedClaims.length === 1){
-      dispatch(setSharingType({sharingType : VCShareType.SINGLE}))
-    }
-    else if (selectedClaims.length > 1){
-      dispatch(setSharingType({sharingType : VCShareType.MULTIPLE}))
+    if (selectedClaims.length === 1) {
+      dispatch(setSharingType({ sharingType: VCShareType.SINGLE }));
+    } else if (selectedClaims.length > 1) {
+      dispatch(setSharingType({ sharingType: VCShareType.MULTIPLE }));
     }
     dispatch(getVpRequest({ selectedClaims }));
   };
 
-
   useEffect(() => {
     dispatch(setBankingCredentials());
     handleGenerateQR();
-  }, [dispatch])
-
+  }, [dispatch]);
 
   if (isLoading) {
     return <Loader className={`absolute lg:top-[200px] right-[100px]`} />;
-  }
-  else if(selectedClaims.length === 1 && unverifiedClaims.length === 1 && isSingleVc){
-    dispatch(raiseAlert({ ...AlertMessages().incorrectCredential, open: true }))
+  } else if (
+    selectedClaims.length === 1 &&
+    unverifiedClaims.length === 1 &&
+    isSingleVc
+  ) {
+    dispatch(
+      raiseAlert({ ...AlertMessages().incorrectCredential, open: true })
+    );
     dispatch(resetVpRequest());
-  }
-  else if (verifiedVcs.length > 0) {
+  } else if (verifiedVcs.length > 0) {
+    console.log("verified vcs : " + verifiedVcs);
     return (
-      <div className="w-[100vw] lg:w-[50vw]">
+      <div className="w-[100vw]">
         <VpSubmissionResult
           verifiedVcs={verifiedVcs}
           unverifiedClaims={unverifiedClaims}
           txnId={txnId}
-          requestCredentials={handleRequestCredentials}
+          redirectToBank={true}
+          requestCredentials={() => {}}
           reGenerateQr={handleRegenerateQr}
           restart={handleRestartProcess}
           isSingleVc={isSingleVc}

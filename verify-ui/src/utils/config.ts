@@ -268,6 +268,7 @@ export const MosipVerifiableCredentialRenderOrder = [
 ];
 
 export const ComposableCredentialRenderOrder = [
+    "UIN",
     "fullName",
     "gender",
     "dateOfBirth",

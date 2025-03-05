@@ -16,6 +16,7 @@ type VpSubmissionResultProps = {
   reGenerateQr: () => void;
   restart: () => void;
   isSingleVc: boolean;
+  redirectToBank:boolean;
 };
 
 const VpSubmissionResult: React.FC<VpSubmissionResultProps> = ({
@@ -26,6 +27,7 @@ const VpSubmissionResult: React.FC<VpSubmissionResultProps> = ({
   reGenerateQr,
   restart,
   isSingleVc,
+  redirectToBank,
 }) => {
   const { vcStatus } = verifiedVcs[0];
   const selectedClaims: claim[] = useVerifyFlowSelector((state) => state.selectedClaims) || [];
@@ -69,7 +71,7 @@ const VpSubmissionResult: React.FC<VpSubmissionResultProps> = ({
   );
 
   return (
-    <div className="space-y-6 mb-[100px] lg:mb-0">
+    <div className={redirectToBank?"space-y-6 mb-[100px]": "space-y-6 mb-[100px] lg:mb-0"}>
       {isSingleVc ? (
         <ResultSummary status={vcStatus} />
       ) : (
@@ -94,9 +96,13 @@ const VpSubmissionResult: React.FC<VpSubmissionResultProps> = ({
         </div>
       </div>
 
-      {isPartiallyShared
-        ? renderMissingAndResetButton()
-        : renderRequestCredentialsButton()}
+      
+      { 
+        !redirectToBank ?  (
+          isPartiallyShared ? renderMissingAndResetButton() : renderRequestCredentialsButton()
+          )
+          : ""
+      }
     </div>
   );
 };

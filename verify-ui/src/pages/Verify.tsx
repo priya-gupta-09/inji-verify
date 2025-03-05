@@ -33,7 +33,8 @@ export function Verify() {
   const renderRequestCredentialsButton = () => (
     <Button
       id="request-credentials-button"
-      title={t("rqstButton")}
+      // title={t("rqstButton")}
+      title="Cred"
       className={`w-[300px] mx-auto lg:ml-[76px] mt-10 hidden lg:block`}
       fill
       onClick={handleRequestCredentials}

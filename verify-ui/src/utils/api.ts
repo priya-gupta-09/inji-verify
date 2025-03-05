@@ -16,6 +16,7 @@ export class api {
     headers: () => {
       return {
         "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "69420"
       };
     },
   };
@@ -26,6 +27,7 @@ export class api {
     headers: () => {
       return {
         "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "69420"
       };
     },
     body: {
@@ -52,7 +54,8 @@ export class api {
     headers: () => {
       return {
         "Content-Type": "application/json",
-        "Connection": "close"
+        "Connection": "close",
+        "ngrok-skip-browser-warning": "69420"
       };
     },
   };
@@ -62,7 +65,8 @@ export class api {
     methodType: "GET",
     headers: () => {
       return {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "69420",
       };
     },
   };

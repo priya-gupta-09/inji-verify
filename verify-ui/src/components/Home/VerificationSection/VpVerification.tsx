@@ -78,6 +78,7 @@ const handleGenerateQR = () => {
           verifiedVcs={verifiedVcs}
           unverifiedClaims={unverifiedClaims}
           txnId={txnId}
+          redirectToBank={false}
           requestCredentials={handleRequestCredentials}
           reGenerateQr={handleRegenerateQr}
           restart={handleRestartProcess}
@@ -102,7 +103,8 @@ const handleGenerateQR = () => {
               </div>
               <Button
                 id="request-credentials-button"
-                title={t("rqstButton")}
+                // title={t("rqstButton")}
+                title="VC cred"
                 className={`w-[300px] mx-auto lg:ml-[76px] mt-10 lg:hidden`}
                 fill
                 onClick={handleRequestCredentials}

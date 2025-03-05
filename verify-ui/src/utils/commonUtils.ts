@@ -8,7 +8,7 @@ export const getPresentationDefinition = (data: QrData) => {
     `&response_mode=direct_post` +
     `&nonce=${data.authorizationDetails.nonce}` +
     `&state=${data.requestId}` +
-    `&response_uri=${window.location.origin + window._env_.VERIFY_SERVICE_API_URL + data.authorizationDetails.responseUri}` +
+    `&response_uri=${window._env_.VERIFY_SERVICE_API_URL + data.authorizationDetails.responseUri}` +
     `${data.authorizationDetails.presentationDefinitionUri ? 
       `&presentation_definition_uri=${window.location.origin + window._env_.VERIFY_SERVICE_API_URL + data.authorizationDetails.presentationDefinitionUri}` : 
       `&presentation_definition=${JSON.stringify(data.authorizationDetails.presentationDefinition)}`}` +
@@ -60,7 +60,7 @@ export const getDetailsOrder = (vc: any): Detail[] => {
         }
         return { key, value: "N/A" };
       });
-    case "MOSIPVerifiableCredential":
+    // case "MOSIPVerifiableCredential":
     case "MockVerifiableCredential":
       return MosipVerifiableCredentialRenderOrder.map((key) => {
         if (key in credential) {
