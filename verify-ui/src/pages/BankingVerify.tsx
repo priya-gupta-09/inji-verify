@@ -102,7 +102,7 @@ export function BankingVerify() {
     return (
       <Button
         id="request-credentials-button"
-        title={"Back to Composable Banking"}
+        title={"Continue with Composable Banking"}
         className={`w-[300px] mx-auto -m-20`}
         fill
         onClick={handleRedirectToBank}
