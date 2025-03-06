@@ -1,0 +1,83 @@
+version: '3.7'
+
+services:
+#  inji-verify:
+#    image: inji-verify-ui:mosip-connect
+#    pull_policy: never
+#    ports:
+#      - "3002:3000"
+#    environment:
+#      - INTERNET_CONNECTIVITY_CHECK_ENDPOINT=${INTERNET_CONNECTIVITY_CHECK_ENDPOINT-https://dns.google/}
+#      - INTERNET_CONNECTIVITY_CHECK_TIMEOUT=${INTERNET_CONNECTIVITY_CHECK_TIMEOUT-10000}
+#      - OVP_QR_HEADER={OVP_QR_HEADER-INJI_OVP://payload=}
+#    platform: linux/arm64/v8
+#
+#  inji-verify-be:
+#    container_name: inji-verify-backend
+#    image: inji-verify-backend:mosip-connect
+#    ports:
+#      - "8080:8080"
+#    platform: linux/arm64/v8
+
+# composable FE not working
+#  composable-banking-frontend:
+#    container_name: composable-banking-frontend
+#    build:
+##      context: https://github.com/twlabs/Composable-banking-FE.git#composable-banking:packages/client
+#      context: ../../Composable-banking-FE
+#      dockerfile: Dockerfile
+#      args:
+#        CUSTOM_ENV: production
+#        SERVER_URL: http://localhost:7001
+#    ports:
+#      - 1331:80
+#    networks:
+#      - react
+#
+#  composable-banking-mock-server:
+#    container_name: composable-banking-mockserver
+#    build:
+#      context: ../../Composable-banking-FE/packages/mock-server
+#      dockerfile: Dockerfile
+#    ports:
+#      - 7001:5001
+#    networks:
+#      - react
+#    platform: linux/arm64/v8
+#
+##  composable banking backend
+#  composable-banking-be-postgres:
+#    image: postgres
+#    container_name: composable-banking-be-postgres
+#    restart: unless-stopped
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      POSTGRES_USER: cb-user
+#      POSTGRES_PASSWORD: pass
+#      POSTGRES_DB: onboarding-microservice
+#    platform: linux/arm64/v8
+
+  composable-banking-be-mountebank:
+    image: bbyars/mountebank:2.8.1
+    container_name: composable-banking-be-mountebank
+    restart: unless-stopped
+    command: start
+    ports:
+      - "2525:2525"
+      - "4545:4545"
+    platform: linux/arm64/v8
+
+#  composable banking integration layer
+
+#mobility sample
+  mobility-sample-bap:
+    container_name: mobility-sample-bap
+    image: mobility-sample-bap:mosip-connect
+    pull_policy: never
+    ports:
+      - "2010:2010"
+    platform: linux/arm64/v8
+networks:
+  react:
+    driver: bridge

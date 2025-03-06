@@ -17,7 +17,7 @@ ENV OVP_QR_HEADER=$ovpQrHeader
 COPY package*.json ./
 
 # Install Node.js dependencies
-RUN npm install
+RUN npm install --only=production
 
 # Copy the rest of the application code to the working directory
 COPY . .
