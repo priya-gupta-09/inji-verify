@@ -10,8 +10,3 @@ services:
       - INTERNET_CONNECTIVITY_CHECK_TIMEOUT=${INTERNET_CONNECTIVITY_CHECK_TIMEOUT-10000}
       - OVP_QR_HEADER={OVP_QR_HEADER-INJI_OVP://payload=}
 
-  inji-verify:
-    image: <image-name>:mosip-connect
-    pull_policy: never
-    ports:
-       - "3000:8000"

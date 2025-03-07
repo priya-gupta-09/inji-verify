@@ -19,44 +19,36 @@ services:
 #      - "8080:8080"
 #    platform: linux/arm64/v8
 
-# composable FE not working
-#  composable-banking-frontend:
-#    container_name: composable-banking-frontend
-#    build:
-##      context: https://github.com/twlabs/Composable-banking-FE.git#composable-banking:packages/client
-#      context: ../../Composable-banking-FE
-#      dockerfile: Dockerfile
-#      args:
-#        CUSTOM_ENV: production
-#        SERVER_URL: http://localhost:7001
-#    ports:
-#      - 1331:80
-#    networks:
-#      - react
+# composable FE
+  composable-banking-frontend:
+    container_name: composable-banking-frontend
+    image: kiruthikavjshankar/composable-banking-client:mosip-connect
+    ports:
+      - "3000:3000"
+    networks:
+      - react
 #
-#  composable-banking-mock-server:
-#    container_name: composable-banking-mockserver
-#    build:
-#      context: ../../Composable-banking-FE/packages/mock-server
-#      dockerfile: Dockerfile
-#    ports:
-#      - 7001:5001
-#    networks:
-#      - react
-#    platform: linux/arm64/v8
-#
+  composable-banking-mock-server:
+    container_name: composable-banking-mockserver
+    image: kiruthikavjshankar/composable-banking-mock-server:mosip-connect
+    ports:
+      - "7001:5001"
+    networks:
+      - react
+    platform: linux/arm64/v8
+
 ##  composable banking backend
-#  composable-banking-be-postgres:
-#    image: postgres
-#    container_name: composable-banking-be-postgres
-#    restart: unless-stopped
-#    ports:
-#      - "5432:5432"
-#    environment:
-#      POSTGRES_USER: cb-user
-#      POSTGRES_PASSWORD: pass
-#      POSTGRES_DB: onboarding-microservice
-#    platform: linux/arm64/v8
+  composable-banking-be-postgres:
+    image: postgres
+    container_name: composable-banking-be-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: cb-user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: onboarding-microservice
+    platform: linux/arm64/v8
 
   composable-banking-be-mountebank:
     image: bbyars/mountebank:2.8.1
@@ -69,14 +61,45 @@ services:
     platform: linux/arm64/v8
 
 #  composable banking integration layer
+  composable-banking-il:
+    image: kiruthikavjshankar/composable-banking-il:mosip-connect
+    container_name: composable-banking-il
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_CONFIG_LOCATION=/config/application.properties  # Set properties file path
+    volumes:
+        - ./config/il-application.properties:/config/application.properties
+    platform: linux/arm64/v8
 
-#mobility sample
+##mobility sample
+  mobility-sample-fe:
+    container_name: mobility-sample-frontend
+    image: kiruthikavjshankar/mobility-sample-fe:mosip-connect
+    ports:
+      - "3001:3000"
+    platform: linux/arm64/v8
+
   mobility-sample-bap:
     container_name: mobility-sample-bap
-    image: mobility-sample-bap:mosip-connect
-    pull_policy: never
+    image: kiruthikavjshankar/mobility-sample-bap:mosip-connect
     ports:
       - "2010:2010"
+    platform: linux/arm64/v8
+
+#This failing - Error: invalid input
+  mobility-sample-bpp:
+    container_name: mobility-sample-bpp
+    image: kiruthikavjshankar/mobility-sample-bpp:mosip-connect
+    ports:
+      - "3010:3010"
+    platform: linux/arm64/v8
+
+  sample-gateway-registry:
+    container_name: sample-gateway-registry
+    image: kiruthikavjshankar/sample-gateway-registry:mosip-connect
+    ports:
+      - "1010:1010"
     platform: linux/arm64/v8
 networks:
   react:
