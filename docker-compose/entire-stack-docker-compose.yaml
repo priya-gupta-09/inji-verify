@@ -18,7 +18,7 @@ services:
 #
   inji-verify-be:
     container_name: inji-verify-backend
-    image: inji-verify-backend:mosip-connect
+    image:  kiruthikavjshankar/inji-verify-backend:mosip-connect
     pull_policy: never
     ports:
       - "8080:8080"
