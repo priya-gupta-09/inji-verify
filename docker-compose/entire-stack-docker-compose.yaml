@@ -1,23 +1,28 @@
 version: '3.7'
 
 services:
-#  inji-verify:
-#    image: inji-verify-ui:mosip-connect
-#    pull_policy: never
-#    ports:
-#      - "3002:3000"
-#    environment:
-#      - INTERNET_CONNECTIVITY_CHECK_ENDPOINT=${INTERNET_CONNECTIVITY_CHECK_ENDPOINT-https://dns.google/}
-#      - INTERNET_CONNECTIVITY_CHECK_TIMEOUT=${INTERNET_CONNECTIVITY_CHECK_TIMEOUT-10000}
-#      - OVP_QR_HEADER={OVP_QR_HEADER-INJI_OVP://payload=}
-#    platform: linux/arm64/v8
+  inji-verify-ui:
+    container_name: inji-verify-ui
+#    image: kiruthikavjshankar/inji-verify-ui:mosip-connect
+    image: inji-verify-ui:local
+    pull_policy: never
+    ports:
+      - "3002:3000"
+    environment:
+      - INTERNET_CONNECTIVITY_CHECK_ENDPOINT=${INTERNET_CONNECTIVITY_CHECK_ENDPOINT-https://dns.google/}
+      - INTERNET_CONNECTIVITY_CHECK_TIMEOUT=${INTERNET_CONNECTIVITY_CHECK_TIMEOUT-10000}
+      - OVP_QR_HEADER={OVP_QR_HEADER-INJI_OVP://payload=}
+#    platform: linux/amd64
+    platform: linux/arm64/v8
 #
-#  inji-verify-be:
-#    container_name: inji-verify-backend
-#    image: inji-verify-backend:mosip-connect
-#    ports:
-#      - "8080:8080"
-#    platform: linux/arm64/v8
+#
+  inji-verify-be:
+    container_name: inji-verify-backend
+    image: inji-verify-backend:mosip-connect
+    pull_policy: never
+    ports:
+      - "8080:8080"
+    platform: linux/arm64/v8
 
 # composable FE
   composable-banking-frontend:
@@ -27,6 +32,7 @@ services:
       - "3000:3000"
     networks:
       - react
+    platform: linux/arm64/v8
 #
   composable-banking-mock-server:
     container_name: composable-banking-mockserver
@@ -65,7 +71,7 @@ services:
     image: kiruthikavjshankar/composable-banking-il:mosip-connect
     container_name: composable-banking-il
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       - SPRING_CONFIG_LOCATION=/config/application.properties  # Set properties file path
     volumes:
@@ -100,6 +106,21 @@ services:
     image: kiruthikavjshankar/sample-gateway-registry:mosip-connect
     ports:
       - "1010:1010"
+    platform: linux/arm64/v8
+
+## consent manager
+  consent-manager-be:
+    container_name: kiruthikavjshankar/consent-manager-be:mosip-connect
+    image: kiruthikavjshankar/consent-manager-be:mosip-connect
+    ports:
+      - "4444:4444"
+    platform: linux/arm64/v8
+
+  consent-manager-fe:
+    container_name: kiruthikavjshankar/consent-manager-fe:mosip-connect
+    image: consent-manager-fe:local
+    ports:
+      - "3003:3000"
     platform: linux/arm64/v8
 networks:
   react:
