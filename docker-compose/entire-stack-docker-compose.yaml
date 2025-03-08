@@ -1,21 +1,20 @@
 version: '3.7'
 
 services:
-#  inji-verify-ui:
-#    container_name: inji-verify-ui
-##    image: kiruthikavjshankar/inji-verify-ui:mosip-connect
+  inji-verify-ui:
+    container_name: inji-verify-ui
+    image: kiruthikavjshankar/inji-verify-ui:mosip-connect
 #    image: inji-verify-ui:local
 #    pull_policy: never
-#    ports:
-#      - "3002:3000"
-#    environment:
-#      - INTERNET_CONNECTIVITY_CHECK_ENDPOINT=${INTERNET_CONNECTIVITY_CHECK_ENDPOINT-https://dns.google/}
-#      - INTERNET_CONNECTIVITY_CHECK_TIMEOUT=${INTERNET_CONNECTIVITY_CHECK_TIMEOUT-10000}
-#      - OVP_QR_HEADER={OVP_QR_HEADER-INJI_OVP://payload=}
-##    platform: linux/amd64
-#    platform: linux/arm64/v8
-#
-#
+    ports:
+      - "3002:8000"
+    environment:
+      - INTERNET_CONNECTIVITY_CHECK_ENDPOINT=${INTERNET_CONNECTIVITY_CHECK_ENDPOINT-https://dns.google/}
+      - INTERNET_CONNECTIVITY_CHECK_TIMEOUT=${INTERNET_CONNECTIVITY_CHECK_TIMEOUT-10000}
+      - OVP_QR_HEADER={OVP_QR_HEADER-INJI_OVP://payload=}
+#    platform: linux/amd64
+    platform: linux/arm64/v8
+
   inji-verify-be:
     container_name: inji-verify-backend
     image:  kiruthikavjshankar/inji-verify-backend:mosip-connect
@@ -28,7 +27,7 @@ services:
     container_name: composable-banking-frontend
     image: kiruthikavjshankar/composable-banking-client:mosip-connect
     ports:
-      - "3000:3000"
+      - "3000:80"
     networks:
       - react
     platform: linux/arm64/v8
@@ -54,14 +53,21 @@ services:
 ##  composable banking backend
   composable-banking-be-postgres:
     image: postgres
-    container_name: composable-banking-be-postgres
+    container_name: postgres
     restart: unless-stopped
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: cb-user
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: onboarding-microservice
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "cb-user" ]
+      interval: 10s
+      retries: 5
+      start_period: 5s
     platform: linux/arm64/v8
 
   composable-banking-be-mountebank:
@@ -80,6 +86,13 @@ services:
     ports:
       - "8082:8080"
     platform: linux/arm64/v8
+    environment:
+      - DB_USER=cb-user
+      - DB_PASSWORD=pass
+      - DB_NAME=onboarding-microservice
+      - DB_HOST=postgres
+    depends_on:
+      - composable-banking-be-postgres
 #  composable banking integration layer
 
   composable-banking-il:
@@ -111,13 +124,13 @@ services:
 #This failing - Error: invalid input
   mobility-sample-bpp:
     container_name: mobility-sample-bpp
-    image: mobility-sample-bpp:mosip-connect
+    image: kiruthikavjshankar/mobility-sample-bpp:mosip-connect
     ports:
       - "3010:3010"
     env_file:
       - ./config/.env
     platform: linux/arm64/v8
-    pull_policy: never
+#    pull_policy: never
     depends_on:
       - sample-gateway-registry
 
@@ -148,3 +161,6 @@ services:
 networks:
   react:
     driver: bridge
+
+volumes:
+  pg_data:
