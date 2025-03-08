@@ -32,7 +32,8 @@ export class api {
     },
     body: {
       transactionId: "",
-      clientId: window.location.origin,
+      // clientId: window.location.origin,
+      clientId: window._env_.VERIFY_SERVICE_API_URL,
       presentationDefinition: {
         id: "c4822b58-7fb4-454e-b827-f8758fe27f9a",
         purpose:

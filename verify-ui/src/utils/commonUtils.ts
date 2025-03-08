@@ -10,9 +10,12 @@ export const getPresentationDefinition = (data: QrData) => {
     `&state=${data.requestId}` +
     `&response_uri=${window._env_.VERIFY_SERVICE_API_URL + data.authorizationDetails.responseUri}` +
     `${data.authorizationDetails.presentationDefinitionUri ? 
-      `&presentation_definition_uri=${window.location.origin + window._env_.VERIFY_SERVICE_API_URL + data.authorizationDetails.presentationDefinitionUri}` : 
+      // TODO:  Remove window.location.origin -> window.location.origin + window._env_.VERIFY_SERVICE_API_URL and use window._env_.VERIFY_SERVICE_API_URL to handle communication with ngrok via mobile
+      // `&presentation_definition_uri=${window.location.origin + window._env_.VERIFY_SERVICE_API_URL + data.authorizationDetails.presentationDefinitionUri}` : 
+      `&presentation_definition_uri=${window._env_.VERIFY_SERVICE_API_URL + data.authorizationDetails.presentationDefinitionUri}` : 
       `&presentation_definition=${JSON.stringify(data.authorizationDetails.presentationDefinition)}`}` +
-    `&client_metadata={"client_name":"${window.location.origin}"}`
+    // `&client_metadata={"client_name":"${window.location.origin}"}`
+        `&client_metadata={"client_name":"${window._env_.VERIFY_SERVICE_API_URL}"}`
   );
 };
 
@@ -64,7 +67,7 @@ export const getDetailsOrder = (vc: any): Detail[] => {
     case "MockVerifiableCredential":
       return MosipVerifiableCredentialRenderOrder.map((key) => {
         if (key in credential) {
-          
+
           if(typeof(credential[key])=="object"){
             return { key, value: credential[key as keyof credentialSubject][0].value || "N/A" };
           }
