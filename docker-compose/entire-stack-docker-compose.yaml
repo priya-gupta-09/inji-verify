@@ -1,25 +1,24 @@
 version: '3.7'
 
 services:
-  inji-verify-ui:
-    container_name: inji-verify-ui
-#    image: kiruthikavjshankar/inji-verify-ui:mosip-connect
-    image: inji-verify-ui:local
-    pull_policy: never
-    ports:
-      - "3002:3000"
-    environment:
-      - INTERNET_CONNECTIVITY_CHECK_ENDPOINT=${INTERNET_CONNECTIVITY_CHECK_ENDPOINT-https://dns.google/}
-      - INTERNET_CONNECTIVITY_CHECK_TIMEOUT=${INTERNET_CONNECTIVITY_CHECK_TIMEOUT-10000}
-      - OVP_QR_HEADER={OVP_QR_HEADER-INJI_OVP://payload=}
-#    platform: linux/amd64
-    platform: linux/arm64/v8
+#  inji-verify-ui:
+#    container_name: inji-verify-ui
+##    image: kiruthikavjshankar/inji-verify-ui:mosip-connect
+#    image: inji-verify-ui:local
+#    pull_policy: never
+#    ports:
+#      - "3002:3000"
+#    environment:
+#      - INTERNET_CONNECTIVITY_CHECK_ENDPOINT=${INTERNET_CONNECTIVITY_CHECK_ENDPOINT-https://dns.google/}
+#      - INTERNET_CONNECTIVITY_CHECK_TIMEOUT=${INTERNET_CONNECTIVITY_CHECK_TIMEOUT-10000}
+#      - OVP_QR_HEADER={OVP_QR_HEADER-INJI_OVP://payload=}
+##    platform: linux/amd64
+#    platform: linux/arm64/v8
 #
 #
   inji-verify-be:
     container_name: inji-verify-backend
     image:  kiruthikavjshankar/inji-verify-backend:mosip-connect
-    pull_policy: never
     ports:
       - "8080:8080"
     platform: linux/arm64/v8
@@ -33,6 +32,15 @@ services:
     networks:
       - react
     platform: linux/arm64/v8
+    depends_on:
+      - composable-banking-mock-server
+      - consent-manager-be
+      - composable-banking-be
+    environment:
+      - name=Ravinder Mahajan
+#      composable server backend
+      - SERVER_URL=http://host.docker.internal:8082
+      - CONSENT_MANAGER_URL=http://host.docker.internal:4444
 #
   composable-banking-mock-server:
     container_name: composable-banking-mockserver
@@ -66,7 +74,14 @@ services:
       - "4545:4545"
     platform: linux/arm64/v8
 
+  composable-banking-be:
+    image: kiruthikavjshankar/composable-banking-be:mosip-connect
+    container_name: composable-banking-be
+    ports:
+      - "8082:8080"
+    platform: linux/arm64/v8
 #  composable banking integration layer
+
   composable-banking-il:
     image: kiruthikavjshankar/composable-banking-il:mosip-connect
     container_name: composable-banking-il
@@ -96,10 +111,15 @@ services:
 #This failing - Error: invalid input
   mobility-sample-bpp:
     container_name: mobility-sample-bpp
-    image: kiruthikavjshankar/mobility-sample-bpp:mosip-connect
+    image: mobility-sample-bpp:mosip-connect
     ports:
       - "3010:3010"
+    env_file:
+      - ./config/.env
     platform: linux/arm64/v8
+    pull_policy: never
+    depends_on:
+      - sample-gateway-registry
 
   sample-gateway-registry:
     container_name: sample-gateway-registry
@@ -107,18 +127,21 @@ services:
     ports:
       - "1010:1010"
     platform: linux/arm64/v8
+    depends_on:
+      - mobility-sample-bap
 
 ## consent manager
   consent-manager-be:
-    container_name: kiruthikavjshankar/consent-manager-be:mosip-connect
+    container_name: consent-manager-be
     image: kiruthikavjshankar/consent-manager-be:mosip-connect
     ports:
       - "4444:4444"
     platform: linux/arm64/v8
 
   consent-manager-fe:
-    container_name: kiruthikavjshankar/consent-manager-fe:mosip-connect
-    image: consent-manager-fe:local
+    container_name: consent-manager-fe
+    image: kiruthikavjshankar/consent-manager-fe:mosip-connect
+    pull_policy: missing
     ports:
       - "3003:3000"
     platform: linux/arm64/v8
