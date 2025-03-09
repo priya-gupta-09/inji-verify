@@ -14,7 +14,7 @@ interface DropdownItem {
 export const LanguageSelector: React.FC = () => {
   const dispatch = useAppDispatch();
   let language = useAppSelector((state: RootState) => state.common.language);
-  language = language ?? window._env_.DEFAULT_LANG;
+  language = language || "en";
   const rtl = isRTL(language);
   const [isOpen, setIsOpen] = useState(false);
 

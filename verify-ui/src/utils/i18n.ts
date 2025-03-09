@@ -26,7 +26,7 @@ export const LanguagesSupported: LanguageObject[] = [
   { label: "ខ្មែរ", value: "km" },
 ];
 
-export const defaultLanguage = window._env_.DEFAULT_LANG;
+export const defaultLanguage = window._env_.DEFAULT_LANG || "en";
 
 export const selected_language = storage.getItem(storage.SELECTED_LANGUAGE);
 
