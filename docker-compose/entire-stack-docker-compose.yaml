@@ -3,8 +3,8 @@ version: '3.7'
 services:
   inji-verify-ui:
     container_name: inji-verify-ui
-#    image: kiruthikavjshankar/inji-verify-ui:mosip-connect
-    image: inji-verify-ui:local
+    image: kiruthikavjshankar/inji-verify-ui:mosip-connect
+#    image: inji-verify-ui:local
 #    pull_policy: never
     ports:
       - "3002:80"
